@@ -29,24 +29,25 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.gpsLocationTimer = new System.Windows.Forms.Timer(this.components);
             this.labelSpeed = new System.Windows.Forms.Label();
             this.labelCounty = new System.Windows.Forms.Label();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.statusDisplay = new System.Windows.Forms.ToolStripStatusLabel();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.startToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.eToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.speedTimer = new System.Windows.Forms.Timer(this.components);
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // timer1
+            // gpsLocationTimer
             // 
-            this.timer1.Interval = 60000;
-            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            this.gpsLocationTimer.Interval = 60000;
+            this.gpsLocationTimer.Tick += new System.EventHandler(this.gpsLocationTimer_Tick);
             // 
             // labelSpeed
             // 
@@ -58,7 +59,7 @@
             this.labelSpeed.Name = "labelSpeed";
             this.labelSpeed.Size = new System.Drawing.Size(155, 31);
             this.labelSpeed.TabIndex = 1;
-            this.labelSpeed.Text = "999.9 km/h";
+            this.labelSpeed.Text = "0 km/h";
             // 
             // labelCounty
             // 
@@ -70,23 +71,22 @@
             this.labelCounty.Name = "labelCounty";
             this.labelCounty.Size = new System.Drawing.Size(300, 31);
             this.labelCounty.TabIndex = 2;
-            this.labelCounty.Text = "A";
             // 
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripStatusLabel1});
+            this.statusDisplay});
             this.statusStrip1.Location = new System.Drawing.Point(0, 157);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(493, 22);
             this.statusStrip1.TabIndex = 3;
             this.statusStrip1.Text = "statusStrip1";
             // 
-            // toolStripStatusLabel1
+            // statusDisplay
             // 
-            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(43, 17);
-            this.toolStripStatusLabel1.Text = "Läuft...";
+            this.statusDisplay.Name = "statusDisplay";
+            this.statusDisplay.Size = new System.Drawing.Size(54, 17);
+            this.statusDisplay.Text = "gestoppt";
             // 
             // menuStrip1
             // 
@@ -111,21 +111,28 @@
             // startToolStripMenuItem
             // 
             this.startToolStripMenuItem.Name = "startToolStripMenuItem";
-            this.startToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.startToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
             this.startToolStripMenuItem.Text = "Start";
             this.startToolStripMenuItem.Click += new System.EventHandler(this.startToolStripMenuItem_Click);
             // 
             // stopToolStripMenuItem
             // 
             this.stopToolStripMenuItem.Name = "stopToolStripMenuItem";
-            this.stopToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.stopToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
             this.stopToolStripMenuItem.Text = "Stopp";
+            this.stopToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
             // 
             // eToolStripMenuItem
             // 
             this.eToolStripMenuItem.Name = "eToolStripMenuItem";
-            this.eToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.eToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
             this.eToolStripMenuItem.Text = "Einstellungen";
+            this.eToolStripMenuItem.Click += new System.EventHandler(this.eToolStripMenuItem_Click);
+            // 
+            // speedTimer
+            // 
+            this.speedTimer.Interval = 1000;
+            this.speedTimer.Tick += new System.EventHandler(this.speedTimer_Tick);
             // 
             // Form1
             // 
@@ -151,16 +158,17 @@
 
         #endregion
 
-        private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.Timer gpsLocationTimer;
         private System.Windows.Forms.Label labelSpeed;
         private System.Windows.Forms.Label labelCounty;
         private System.Windows.Forms.StatusStrip statusStrip1;
-        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private System.Windows.Forms.ToolStripStatusLabel statusDisplay;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem startToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem stopToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem eToolStripMenuItem;
+        private System.Windows.Forms.Timer speedTimer;
     }
 }
 
