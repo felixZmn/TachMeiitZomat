@@ -18,10 +18,6 @@ namespace TachMeiitZomat
         public Form1()
         {
             InitializeComponent();
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
             statusDisplay.Text = StatusEnum.STATUS_STOPPED;
             LoadAndApplySettings();
             updateSpeed(0);
@@ -179,6 +175,18 @@ namespace TachMeiitZomat
             {
                 return null;
             }
+        }
+
+        private void kontaktToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // ToDo: Echte Mail-Adresse dazu schreiben
+            System.Diagnostics.Process.Start("mailto:" + "example@example.com");
+        }
+
+        private void überToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AboutForm aboutForm = new AboutForm();
+            aboutForm.Show();
         }
     }
 }
