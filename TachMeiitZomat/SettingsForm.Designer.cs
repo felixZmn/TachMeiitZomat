@@ -34,6 +34,8 @@
             this.label3 = new System.Windows.Forms.Label();
             this.TbDisplayTitle = new System.Windows.Forms.TextBox();
             this.InputRefreshInterval = new System.Windows.Forms.NumericUpDown();
+            this.label4 = new System.Windows.Forms.Label();
+            this.TbComPort = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.InputRefreshInterval)).BeginInit();
             this.SuspendLayout();
             // 
@@ -48,7 +50,7 @@
             // 
             // settingsSaveButton
             // 
-            this.settingsSaveButton.Location = new System.Drawing.Point(16, 82);
+            this.settingsSaveButton.Location = new System.Drawing.Point(16, 135);
             this.settingsSaveButton.Name = "settingsSaveButton";
             this.settingsSaveButton.Size = new System.Drawing.Size(299, 23);
             this.settingsSaveButton.TabIndex = 1;
@@ -93,11 +95,29 @@
             this.InputRefreshInterval.Size = new System.Drawing.Size(120, 20);
             this.InputRefreshInterval.TabIndex = 6;
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(13, 66);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(53, 13);
+            this.label4.TabIndex = 7;
+            this.label4.Text = "COM-Port";
+            // 
+            // tbComPort
+            // 
+            this.TbComPort.Location = new System.Drawing.Point(165, 63);
+            this.TbComPort.Name = "tbComPort";
+            this.TbComPort.Size = new System.Drawing.Size(120, 20);
+            this.TbComPort.TabIndex = 8;
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(329, 121);
+            this.ClientSize = new System.Drawing.Size(329, 193);
+            this.Controls.Add(this.TbComPort);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.InputRefreshInterval);
             this.Controls.Add(this.TbDisplayTitle);
             this.Controls.Add(this.label3);
@@ -121,5 +141,7 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox TbDisplayTitle;
         private System.Windows.Forms.NumericUpDown InputRefreshInterval;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox TbComPort;
     }
 }

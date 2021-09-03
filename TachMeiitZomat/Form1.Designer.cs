@@ -39,10 +39,10 @@
             this.startToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.eToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.speedTimer = new System.Windows.Forms.Timer(this.components);
             this.hilfeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.kontaktToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.überToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.speedTimer = new System.Windows.Forms.Timer(this.components);
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -133,11 +133,6 @@
             this.eToolStripMenuItem.Text = "Einstellungen";
             this.eToolStripMenuItem.Click += new System.EventHandler(this.eToolStripMenuItem_Click);
             // 
-            // speedTimer
-            // 
-            this.speedTimer.Interval = 1000;
-            this.speedTimer.Tick += new System.EventHandler(this.speedTimer_Tick);
-            // 
             // hilfeToolStripMenuItem
             // 
             this.hilfeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -150,16 +145,21 @@
             // kontaktToolStripMenuItem
             // 
             this.kontaktToolStripMenuItem.Name = "kontaktToolStripMenuItem";
-            this.kontaktToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.kontaktToolStripMenuItem.Size = new System.Drawing.Size(115, 22);
             this.kontaktToolStripMenuItem.Text = "Kontakt";
             this.kontaktToolStripMenuItem.Click += new System.EventHandler(this.kontaktToolStripMenuItem_Click);
             // 
             // überToolStripMenuItem
             // 
             this.überToolStripMenuItem.Name = "überToolStripMenuItem";
-            this.überToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.überToolStripMenuItem.Size = new System.Drawing.Size(115, 22);
             this.überToolStripMenuItem.Text = "Über";
             this.überToolStripMenuItem.Click += new System.EventHandler(this.überToolStripMenuItem_Click);
+            // 
+            // speedTimer
+            // 
+            this.speedTimer.Interval = 2000;
+            this.speedTimer.Tick += new System.EventHandler(this.speedTimer_Tick);
             // 
             // Form1
             // 
@@ -173,6 +173,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "TachMeiitZomat";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.menuStrip1.ResumeLayout(false);

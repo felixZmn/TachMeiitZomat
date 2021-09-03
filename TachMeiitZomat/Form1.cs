@@ -1,29 +1,30 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Windows.Forms;
-using System.Device.Location; // Used for GPS Stuff... hopefully
+using System.Threading;
 
 /*
  * Zeit:
  * 2021.08.30: 1500 - 1730 -> 2.5h
+ * 2021.09.02: 1300 - 1500 -> 2h
+ * 2021.09.02: 1900 - 2100 -> 2h
  */
 namespace TachMeiitZomat
 {
     public partial class Form1 : Form
     {
-        HttpClient client = new HttpClient();
+        public static ManualResetEvent mre = new ManualResetEvent(true);
+
+        GPSHandler gps;
+        Thread thread;
+
         public Form1()
         {
             InitializeComponent();
-            statusDisplay.Text = StatusEnum.STATUS_STOPPED;
             LoadAndApplySettings();
-            updateSpeed(0);
-            updateCounty("");
-            // Referer für OpenStreetMap Location Zeug. Kann weg, wenn die Windows API taugt
-            client.DefaultRequestHeaders.Add("Referer", "TachMeiitZomat");
+            statusDisplay.Text = StatusEnum.STATUS_STOPPED;
         }
 
         /// <summary>
@@ -34,13 +35,24 @@ namespace TachMeiitZomat
         /// <param name="e"></param>
         private void startToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            statusDisplay.Text = StatusEnum.STATUS_RUNNING;
-            gpsLocationTimer.Enabled = true;
-            speedTimer.Enabled = true;
-
-            // ToDo: Replace with correct logic
-            var location = getLocation("48.716669", "10.434100");
-            updateCounty(location.address.county);
+            if (gps.getReady())
+            {
+                statusDisplay.Text = StatusEnum.STATUS_RUNNING;
+                if (thread.ThreadState == ThreadState.Unstarted)
+                {
+                    thread.Start();
+                }
+                else
+                {
+                    mre.Set();
+                }
+                gpsLocationTimer.Enabled = true;
+                speedTimer.Enabled = true;
+            } else
+            {
+                MessageBox.Show("GPS-Empfänger konnte nicht initialisiert werden. Bitte Einstellungen und Verbindung Prüfen");
+            }
+            
         }
 
         /// <summary>
@@ -50,6 +62,7 @@ namespace TachMeiitZomat
         /// <param name="e"></param>
         private void stopToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            mre.Reset();
             gpsLocationTimer.Enabled = false;
             speedTimer.Enabled = false;
             statusDisplay.Text = StatusEnum.STATUS_STOPPED;
@@ -73,10 +86,7 @@ namespace TachMeiitZomat
         /// <param name="e"></param>
         private void gpsLocationTimer_Tick(object sender, EventArgs e)
         {
-            // Statusanzeige ändern
-            // (theoretisch gps abfragen)
-            // api abfragen
-            // oberfläche aktualisieren
+            updateCounty(gps.getCounty());
         }
 
         /// <summary>
@@ -87,7 +97,7 @@ namespace TachMeiitZomat
         /// <param name="e"></param>
         private void speedTimer_Tick(object sender, EventArgs e)
         {
-            updateSpeed(getSpeed());
+            updateSpeed(gps.getSpeed());
         }
 
         /// <summary>
@@ -99,6 +109,12 @@ namespace TachMeiitZomat
             this.Text = settings.getDisplayTitle();
             // times 1000, because interval is saved in seconds, not in ms
             gpsLocationTimer.Interval = Convert.ToInt32(settings.getRefreshInterval()) * 1000;
+            if (thread != null && thread.IsAlive)
+            {
+                thread.Abort();
+            }
+            gps = new GPSHandler(settings.getComPort());
+            thread = new Thread(new ThreadStart(gps.ReadGpsSensor));
         }
 
         /// <summary>
@@ -119,64 +135,6 @@ namespace TachMeiitZomat
             labelCounty.Text = county;
         }
 
-        /*
-         * get speed from gps receiver
-         * ToDo: Move to own GPS class
-         */
-        private int getSpeed()
-        {
-            return 7;
-        }
-
-        /*
-         * get location from gps receiver
-         * ToDo: Move to own GPS class
-         */
-        private OpenStreetMapLocation getLocation(String lat, String lon)
-        {
-            if (true)
-            {
-                var json = @"{
-  'place_id': 203300934,
-  'licence': 'Data © OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright',
-  'osm_type': 'way',
-  'osm_id': 534929132,
-  'lat': '48.71664605',
-  'lon': '10.434111758561926',
-  'display_name': '36, Freibergstraße, Eglingen, Dischingen, Landkreis Heidenheim, Baden-Württemberg, 89561, Deutschland',
-  'address': {
-    'house_number': '36',
-    'road': 'Freibergstraße',
-    'village': 'Eglingen',
-    'county': 'Landkreis Neumarkt in der Oberpfalz',
-    'state': 'Baden-Württemberg',
-    'postcode': '89561',
-    'country': 'Deutschland',
-    'country_code': 'de'
-  },
-  'boundingbox': [
-    '48.71659',
-    '48.716702',
-    '10.4340396',
-    '10.4341839'
-  ]
-}";
-                return JsonConvert.DeserializeObject<OpenStreetMapLocation>(json);
-
-            }
-            var response = client.GetAsync("http://nominatim.openstreetmap.org/reverse?format=json&lat=" + lat + "&lon=" + lon).Result;
-            if (response.IsSuccessStatusCode)
-            {
-                var responseContent = response.Content;
-                string responseString = responseContent.ReadAsStringAsync().Result;
-                return JsonConvert.DeserializeObject<OpenStreetMapLocation>(responseString);
-            }
-            else
-            {
-                return null;
-            }
-        }
-
         private void kontaktToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // ToDo: Echte Mail-Adresse dazu schreiben
@@ -187,6 +145,11 @@ namespace TachMeiitZomat
         {
             AboutForm aboutForm = new AboutForm();
             aboutForm.Show();
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            thread.Abort();
         }
     }
 }

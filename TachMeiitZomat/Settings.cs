@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 
 namespace TachMeiitZomat
@@ -12,6 +8,7 @@ namespace TachMeiitZomat
     {
         private static string REFRESH_INTERVAL_KEY = "refreshInterval";
         private static string DISPLAY_TITLE_KEY = "displayTitle";
+        private static string COMPORT_KEY = "comPort";
 
         Configuration configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
 
@@ -30,7 +27,7 @@ namespace TachMeiitZomat
             ConfigurationManager.RefreshSection(configFile.AppSettings.SectionInformation.Name);
         }
 
-        private String getSetting(string key)
+        private string getSetting(string key)
         {
             var settings = configFile.AppSettings.Settings;
             if (settings[key] == null || settings[key].Value == null)
@@ -45,7 +42,7 @@ namespace TachMeiitZomat
 
         public string getRefreshInterval()
         {
-            String interval = getSetting(REFRESH_INTERVAL_KEY);
+            string interval = getSetting(REFRESH_INTERVAL_KEY);
             return interval == "" ? "0" : interval;
         }
 
@@ -62,6 +59,16 @@ namespace TachMeiitZomat
         public void setDisplayTitle(string title)
         {
             AddOrUpdateSetting(DISPLAY_TITLE_KEY, title);
+        }
+
+        public string getComPort()
+        {
+            return getSetting(COMPORT_KEY);
+        }
+
+        public void setComPort(string comPort)
+        {
+            AddOrUpdateSetting(COMPORT_KEY, comPort);
         }
     }
 }
