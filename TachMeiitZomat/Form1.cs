@@ -1,15 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
 using System.Windows.Forms;
 using System.Threading;
+using System.Drawing;
 
 /*
  * Zeit:
  * 2021.08.30: 1500 - 1730 -> 2.5h
  * 2021.09.02: 1300 - 1500 -> 2h
  * 2021.09.02: 1900 - 2100 -> 2h
+ * 2021.09.03: 1500 - 1700 -> 2h
+ */
+
+/*
+ * ToDo: ThreadAbortException vermeiden, wenn man einfach die einstellungen öffnet, während der thread im hintergrund läuft
  */
 namespace TachMeiitZomat
 {
@@ -86,7 +89,7 @@ namespace TachMeiitZomat
         /// <param name="e"></param>
         private void gpsLocationTimer_Tick(object sender, EventArgs e)
         {
-            updateCounty(gps.getCounty());
+            updateCounty(gps.getCountyOrCity());
         }
 
         /// <summary>
@@ -112,6 +115,10 @@ namespace TachMeiitZomat
             if (thread != null && thread.IsAlive)
             {
                 thread.Abort();
+            }
+            if(gps!=null)
+            {
+                gps.Dispose();
             }
             gps = new GPSHandler(settings.getComPort());
             thread = new Thread(new ThreadStart(gps.ReadGpsSensor));

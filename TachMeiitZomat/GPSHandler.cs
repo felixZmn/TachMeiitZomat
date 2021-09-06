@@ -2,13 +2,12 @@
 using System.Device.Location;
 using System.IO.Ports;
 using System.Net.Http;
-using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 
 
 namespace TachMeiitZomat
 {
-    class GPSHandler
+    class GPSHandler : IDisposable
     {
         SerialPort port = new SerialPort();
         GeoCoordinate coordinate = new GeoCoordinate();
@@ -17,9 +16,15 @@ namespace TachMeiitZomat
 
         public GPSHandler(string comPort)
         {
-            // ToDo: set com port name according to settings file
             initComPort(comPort);
             client.DefaultRequestHeaders.Add("Referer", "TachMeiitZomat");
+        }
+
+        public void Dispose()
+        {
+            client.Dispose();
+            port.Close();
+            port.Dispose();
         }
 
         private void initComPort(string portName)
@@ -40,7 +45,6 @@ namespace TachMeiitZomat
             }
         }
 
-
         public void ReadGpsSensor()
         {
             while (true)
@@ -53,56 +57,63 @@ namespace TachMeiitZomat
 
         private void parseNMEAMessage(string message)
         {
-            string pattern = @"\$GPRMC,(.*?),(.*?),(.*?),(.*?),(.*?),(.*?),(.*?),(.*?),(.*?),(.*?),(.*?),(.*?)\*(.*)";
-            var matches = Regex.Matches(message, pattern);
-            
-            if (matches.Count == 1)
+            // only parse gprmc messages
+            if (message.Contains("GPRMC"))
             {
-                string lat = matches[0].Groups[3].ToString();
-                string lng = matches[0].Groups[5].ToString();
-                string spd = matches[0].Groups[7].ToString();
+                var gprmcMessage = new GPRMC(message);
 
-                double degreeLat = Convert.ToDouble(lat.Substring(0, 2));
-                degreeLat += Convert.ToDouble(lat.Substring(2).Replace(".", ",")) / 60;
+                // only convert lat and lng of both are not null
+                if (gprmcMessage.Latitude != "" && gprmcMessage.Longitude != "")
+                {
+                    double degreeLat = Convert.ToDouble(gprmcMessage.Latitude.Substring(0, 2));
+                    degreeLat += Convert.ToDouble(gprmcMessage.Latitude.Substring(2).Replace(".", ",")) / 60;
 
-                double degreeLng = Convert.ToDouble(lng.Substring(0, 3));
-                degreeLng += Convert.ToDouble(lng.Substring(2).Replace(".", ",")) / 60;
+                    double degreeLng = Convert.ToDouble(gprmcMessage.Longitude.Substring(0, 3));
+                    degreeLng += Convert.ToDouble(gprmcMessage.Longitude.Substring(2).Replace(".", ",")) / 60;
 
-                Console.WriteLine(message);
-                Console.WriteLine("parsed data:");
-                Console.WriteLine(degreeLat);
-                Console.WriteLine(degreeLng);
-                Console.WriteLine(spd);
-
-
-                coordinate.Latitude = degreeLat;
-                coordinate.Longitude = degreeLng;
-                coordinate.Speed = Convert.ToDouble(spd.Replace(".", ","));
+                    coordinate.Latitude = degreeLat;
+                    coordinate.Longitude = degreeLng;
+                    coordinate.Speed =Convert.ToDouble(gprmcMessage.Speed.Replace(".", ","));
+                }
             }
         }
+
 
         public double getSpeed()
         {
             // 3.6 is the factor for m/s to km/h
-            return coordinate.Speed != double.NaN ? coordinate.Speed * 3.6 : 0;
+            return Math.Round((coordinate.Speed != double.NaN ? coordinate.Speed * 3.6 : 0));
         }
 
-        public String getCounty()
-        { 
-            
-            var response = client.GetAsync("http://nominatim.openstreetmap.org/reverse?format=json" 
-                + "&lat=" + coordinate.Latitude.ToString().Replace(",", ".") 
+        /// <summary>
+        /// Returns the county of the current position saved in the gps handler
+        /// if no county is set, the current city is returned. 
+        /// if no city is set too, "unbekannt" will be returned
+        /// </summary>
+        /// <returns></returns>
+        public string getCountyOrCity()
+        {
+            var response = client.GetAsync("http://nominatim.openstreetmap.org/reverse?format=json"
+                + "&lat=" + coordinate.Latitude.ToString().Replace(",", ".")
                 + "&lon=" + coordinate.Longitude.ToString().Replace(",", ".")).Result;
 
             if (response.IsSuccessStatusCode)
             {
                 var responseContent = response.Content;
                 string responseString = responseContent.ReadAsStringAsync().Result;
-                return JsonConvert.DeserializeObject<OpenStreetMapLocation>(responseString).address.county;
+                var location = JsonConvert.DeserializeObject<OpenStreetMapLocation>(responseString);
+                if (location.address.county != null)
+                {
+                    return location.address.county;
+                }
+                else if (location.address.city != null)
+                {
+                    return location.address.city;
+                }
             }
-            return "";
+            return "unbekannt";
         }
-        
+
         public bool getReady()
         {
             return ready;
