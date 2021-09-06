@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using System.Drawing;
 
 
 namespace TachMeiitZomat
@@ -9,6 +10,7 @@ namespace TachMeiitZomat
         private static string REFRESH_INTERVAL_KEY = "refreshInterval";
         private static string DISPLAY_TITLE_KEY = "displayTitle";
         private static string COMPORT_KEY = "comPort";
+        private static string COLOR_KEY = "color";
 
         Configuration configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
 
@@ -69,6 +71,16 @@ namespace TachMeiitZomat
         public void setComPort(string comPort)
         {
             AddOrUpdateSetting(COMPORT_KEY, comPort);
+        }
+
+        public string getColor()
+        {
+            return getSetting(COLOR_KEY);
+        }
+
+        public void setColor(int color)
+        {
+            AddOrUpdateSetting(COLOR_KEY, color.ToString());
         }
     }
 }
