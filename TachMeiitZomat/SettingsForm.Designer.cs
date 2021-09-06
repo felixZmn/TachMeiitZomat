@@ -35,7 +35,7 @@
             this.TbDisplayTitle = new System.Windows.Forms.TextBox();
             this.InputRefreshInterval = new System.Windows.Forms.NumericUpDown();
             this.label4 = new System.Windows.Forms.Label();
-            this.TbComPort = new System.Windows.Forms.TextBox();
+            this.comboBoxPorts = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.InputRefreshInterval)).BeginInit();
             this.SuspendLayout();
             // 
@@ -104,19 +104,20 @@
             this.label4.TabIndex = 7;
             this.label4.Text = "COM-Port";
             // 
-            // tbComPort
+            // comboBoxPorts
             // 
-            this.TbComPort.Location = new System.Drawing.Point(165, 63);
-            this.TbComPort.Name = "tbComPort";
-            this.TbComPort.Size = new System.Drawing.Size(120, 20);
-            this.TbComPort.TabIndex = 8;
+            this.comboBoxPorts.FormattingEnabled = true;
+            this.comboBoxPorts.Location = new System.Drawing.Point(164, 66);
+            this.comboBoxPorts.Name = "comboBoxPorts";
+            this.comboBoxPorts.Size = new System.Drawing.Size(121, 21);
+            this.comboBoxPorts.TabIndex = 9;
             // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(329, 193);
-            this.Controls.Add(this.TbComPort);
+            this.Controls.Add(this.comboBoxPorts);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.InputRefreshInterval);
             this.Controls.Add(this.TbDisplayTitle);
@@ -142,6 +143,6 @@
         private System.Windows.Forms.TextBox TbDisplayTitle;
         private System.Windows.Forms.NumericUpDown InputRefreshInterval;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox TbComPort;
+        private System.Windows.Forms.ComboBox comboBoxPorts;
     }
 }

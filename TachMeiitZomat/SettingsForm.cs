@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.Configuration;
+using System.IO.Ports;
 
 namespace TachMeiitZomat
 {
@@ -9,6 +10,11 @@ namespace TachMeiitZomat
         public SettingsForm()
         {
             InitializeComponent();
+            var ports = SerialPort.GetPortNames();
+            foreach (var port in ports)
+            {
+                comboBoxPorts.Items.Add(port);
+            }
             initForm();
         }
 
@@ -17,7 +23,7 @@ namespace TachMeiitZomat
             Settings settings = new Settings();
             settings.setRefreshInterval(InputRefreshInterval.Value.ToString());
             settings.setDisplayTitle(TbDisplayTitle.Text);
-            settings.setComPort(TbComPort.Text);
+            settings.setComPort(comboBoxPorts.Text);
             Close();
         }
 
@@ -26,7 +32,7 @@ namespace TachMeiitZomat
             Settings settings = new Settings();
             InputRefreshInterval.Value = Convert.ToDecimal(settings.getRefreshInterval());
             TbDisplayTitle.Text = settings.getDisplayTitle();
-            TbComPort.Text = settings.getComPort();
+            comboBoxPorts.Text = settings.getComPort();
         }
 
         private void SettingsForm_FormClosed(object sender, FormClosedEventArgs e)
