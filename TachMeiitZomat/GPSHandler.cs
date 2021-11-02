@@ -62,18 +62,18 @@ namespace TachMeiitZomat
             {
                 var gprmcMessage = new GPRMC(message);
 
-                // only convert lat and lng of both are not null
+                // only convert lat and lng if both are not null
                 if (gprmcMessage.Latitude != "" && gprmcMessage.Longitude != "")
                 {
                     double degreeLat = Convert.ToDouble(gprmcMessage.Latitude.Substring(0, 2));
                     degreeLat += Convert.ToDouble(gprmcMessage.Latitude.Substring(2).Replace(".", ",")) / 60;
 
                     double degreeLng = Convert.ToDouble(gprmcMessage.Longitude.Substring(0, 3));
-                    degreeLng += Convert.ToDouble(gprmcMessage.Longitude.Substring(2).Replace(".", ",")) / 60;
+                    degreeLng += Convert.ToDouble(gprmcMessage.Longitude.Substring(3).Replace(".", ",")) / 60;
 
                     coordinate.Latitude = degreeLat;
                     coordinate.Longitude = degreeLng;
-                    coordinate.Speed =Convert.ToDouble(gprmcMessage.Speed.Replace(".", ","));
+                    coordinate.Speed = Convert.ToDouble(gprmcMessage.Speed.Replace(".", ","));
                 }
             }
         }

@@ -53,7 +53,7 @@ namespace TachMeiitZomat
                 speedTimer.Enabled = true;
             } else
             {
-                MessageBox.Show("GPS-Empfänger konnte nicht initialisiert werden. Bitte Einstellungen und Verbindung Prüfen");
+                MessageBox.Show("GPS-Empfänger konnte nicht initialisiert werden. Bitte Einstellungen und Verbindung prüfen");
             }
             
         }
