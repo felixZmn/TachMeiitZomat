@@ -82,7 +82,7 @@ namespace TachMeiitZomat
         public double getSpeed()
         {
             // 3.6 is the factor for m/s to km/h
-            return Math.Round((coordinate.Speed != double.NaN ? coordinate.Speed * 3.6 : 0));
+            return Math.Round((coordinate.Speed != double.NaN ? coordinate.Speed * 1.852 : 0));
         }
 
         /// <summary>
