@@ -93,25 +93,33 @@ namespace TachMeiitZomat
         /// <returns></returns>
         public string getCountyOrCity()
         {
-            var response = client.GetAsync("http://nominatim.openstreetmap.org/reverse?format=json"
-                + "&lat=" + coordinate.Latitude.ToString().Replace(",", ".")
-                + "&lon=" + coordinate.Longitude.ToString().Replace(",", ".")).Result;
-
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var responseContent = response.Content;
-                string responseString = responseContent.ReadAsStringAsync().Result;
-                var location = JsonConvert.DeserializeObject<OpenStreetMapLocation>(responseString);
-                if (location.address.county != null)
+                var response = client.GetAsync("http://nominatim.openstreetmap.org/reverse?format=json"
+            + "&lat=" + coordinate.Latitude.ToString().Replace(",", ".")
+            + "&lon=" + coordinate.Longitude.ToString().Replace(",", ".")).Result;
+
+                if (response.IsSuccessStatusCode)
                 {
-                    return location.address.county;
+                    var responseContent = response.Content;
+                    string responseString = responseContent.ReadAsStringAsync().Result;
+                    var location = JsonConvert.DeserializeObject<OpenStreetMapLocation>(responseString);
+                    if (location.address.county != null)
+                    {
+                        return location.address.county;
+                    }
+                    else if (location.address.city != null)
+                    {
+                        return location.address.city;
+                    }
                 }
-                else if (location.address.city != null)
-                {
-                    return location.address.city;
-                }
+                return "unbekannt";
             }
-            return "unbekannt";
+            catch (Exception e)
+            {
+                return "Landkreisermittlung fehlgeschlagen";
+            }
+
         }
 
         public bool getReady()
