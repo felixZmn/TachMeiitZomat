@@ -36,9 +36,10 @@
             this.InputRefreshInterval = new System.Windows.Forms.NumericUpDown();
             this.label4 = new System.Windows.Forms.Label();
             this.comboBoxPorts = new System.Windows.Forms.ComboBox();
-            this.label5 = new System.Windows.Forms.Label();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.btnColor = new System.Windows.Forms.Button();
+            this.btnFont = new System.Windows.Forms.Button();
+            this.fontDialog1 = new System.Windows.Forms.FontDialog();
             ((System.ComponentModel.ISupportInitialize)(this.InputRefreshInterval)).BeginInit();
             this.SuspendLayout();
             // 
@@ -115,15 +116,6 @@
             this.comboBoxPorts.Size = new System.Drawing.Size(121, 21);
             this.comboBoxPorts.TabIndex = 9;
             // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(13, 98);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(53, 13);
-            this.label5.TabIndex = 10;
-            this.label5.Text = "COM-Port";
-            // 
             // btnColor
             // 
             this.btnColor.Location = new System.Drawing.Point(164, 93);
@@ -134,13 +126,23 @@
             this.btnColor.UseVisualStyleBackColor = true;
             this.btnColor.Click += new System.EventHandler(this.btnColor_Click);
             // 
+            // btnFont
+            // 
+            this.btnFont.Location = new System.Drawing.Point(164, 122);
+            this.btnFont.Name = "btnFont";
+            this.btnFont.Size = new System.Drawing.Size(121, 23);
+            this.btnFont.TabIndex = 12;
+            this.btnFont.Text = "Schrift";
+            this.btnFont.UseVisualStyleBackColor = true;
+            this.btnFont.Click += new System.EventHandler(this.btnFont_Click);
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(329, 193);
+            this.Controls.Add(this.btnFont);
             this.Controls.Add(this.btnColor);
-            this.Controls.Add(this.label5);
             this.Controls.Add(this.comboBoxPorts);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.InputRefreshInterval);
@@ -168,8 +170,9 @@
         private System.Windows.Forms.NumericUpDown InputRefreshInterval;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ComboBox comboBoxPorts;
-        private System.Windows.Forms.Label label5;
         private System.Windows.Forms.ColorDialog colorDialog1;
         private System.Windows.Forms.Button btnColor;
+        private System.Windows.Forms.Button btnFont;
+        private System.Windows.Forms.FontDialog fontDialog1;
     }
 }

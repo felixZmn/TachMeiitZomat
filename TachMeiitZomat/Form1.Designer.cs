@@ -66,13 +66,13 @@
             // 
             // labelCounty
             // 
-            this.labelCounty.AutoSize = true;
+            this.labelCounty.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.labelCounty.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelCounty.Location = new System.Drawing.Point(178, 46);
-            this.labelCounty.MaximumSize = new System.Drawing.Size(300, 0);
-            this.labelCounty.MinimumSize = new System.Drawing.Size(300, 0);
+            this.labelCounty.MinimumSize = new System.Drawing.Size(300, 10);
             this.labelCounty.Name = "labelCounty";
-            this.labelCounty.Size = new System.Drawing.Size(300, 31);
+            this.labelCounty.Size = new System.Drawing.Size(300, 93);
             this.labelCounty.TabIndex = 2;
             // 
             // statusStrip1

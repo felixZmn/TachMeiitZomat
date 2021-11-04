@@ -111,6 +111,10 @@ namespace TachMeiitZomat
             Settings settings = new Settings();
             this.Text = settings.getDisplayTitle();
             this.BackColor = Color.FromArgb(Convert.ToInt32(settings.getColor()));
+            labelSpeed.ForeColor = settings.getFontColor();
+            labelSpeed.Font = settings.getFont();
+            labelCounty.ForeColor = settings.getFontColor();
+            labelCounty.Font = settings.getFont();
             // times 1000, because interval is saved in seconds, not in ms
             gpsLocationTimer.Interval = Convert.ToInt32(settings.getRefreshInterval()) * 1000;
             if (thread != null && thread.IsAlive)

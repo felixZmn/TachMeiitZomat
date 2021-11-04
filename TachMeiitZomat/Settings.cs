@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Configuration;
 using System.Drawing;
 
@@ -11,6 +12,9 @@ namespace TachMeiitZomat
         private static string DISPLAY_TITLE_KEY = "displayTitle";
         private static string COMPORT_KEY = "comPort";
         private static string COLOR_KEY = "color";
+        private static string FONT_KEY = "font";
+        private static string FONT_COLOR_KEY = "fontColor";
+
 
         Configuration configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
 
@@ -81,6 +85,31 @@ namespace TachMeiitZomat
         public void setColor(int color)
         {
             AddOrUpdateSetting(COLOR_KEY, color.ToString());
+        }
+
+        public Font getFont()
+        {
+            TypeConverter converter = TypeDescriptor.GetConverter(typeof(Font));
+            return (Font) converter.ConvertFromString(getSetting(FONT_KEY));
+        }
+
+        public void setFont(Font font)
+        {
+            TypeConverter Converter = TypeDescriptor.GetConverter(typeof(Font));
+            string FontString = Converter.ConvertToString(font);
+            AddOrUpdateSetting(FONT_KEY, FontString);
+        }
+
+        public Color getFontColor()
+        {
+            string color = getSetting(FONT_COLOR_KEY);
+            return Color.FromArgb(Convert.ToInt32(color));
+        }
+
+        public void setFontColor(Color color)
+        {
+            string colorString = color.ToArgb().ToString(); 
+            AddOrUpdateSetting(FONT_COLOR_KEY, colorString);
         }
     }
 }
