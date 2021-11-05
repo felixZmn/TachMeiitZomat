@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Device.Location;
 using System.IO.Ports;
 using System.Net.Http;
@@ -81,7 +81,7 @@ namespace TachMeiitZomat
 
         public double getSpeed()
         {
-            // 3.6 is the factor for m/s to km/h
+            // 1.852 is the factor for knots to km/h
             return Math.Round((coordinate.Speed != double.NaN ? coordinate.Speed * 1.852 : 0));
         }
 

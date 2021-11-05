@@ -150,7 +150,7 @@ namespace TachMeiitZomat
         private void kontaktToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // ToDo: Echte Mail-Adresse dazu schreiben
-            System.Diagnostics.Process.Start("mailto:" + "example@example.com");
+            System.Diagnostics.Process.Start("mailto:" + "felix.zimmermann.1.de@gmail.com");
         }
 
         private void überToolStripMenuItem_Click(object sender, EventArgs e)
