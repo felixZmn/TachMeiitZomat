@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Device.Location;
 using System.IO.Ports;
 using System.Net.Http;
@@ -93,32 +93,25 @@ namespace TachMeiitZomat
         /// <returns></returns>
         public string getCountyOrCity()
         {
-            try
-            {
-                var response = client.GetAsync("http://nominatim.openstreetmap.org/reverse?format=json"
-            + "&lat=" + coordinate.Latitude.ToString().Replace(",", ".")
-            + "&lon=" + coordinate.Longitude.ToString().Replace(",", ".")).Result;
+            var response = client.GetAsync("http://nominatim.openstreetmap.org/reverse?format=json"
+        + "&lat=" + coordinate.Latitude.ToString().Replace(",", ".")
+        + "&lon=" + coordinate.Longitude.ToString().Replace(",", ".")).Result;
 
-                if (response.IsSuccessStatusCode)
-                {
-                    var responseContent = response.Content;
-                    string responseString = responseContent.ReadAsStringAsync().Result;
-                    var location = JsonConvert.DeserializeObject<OpenStreetMapLocation>(responseString);
-                    if (location.address.county != null)
-                    {
-                        return location.address.county;
-                    }
-                    else if (location.address.city != null)
-                    {
-                        return location.address.city;
-                    }
-                }
-                return "unbekannt";
-            }
-            catch (Exception e)
+            if (response.IsSuccessStatusCode)
             {
-                return "Landkreisermittlung fehlgeschlagen";
+                var responseContent = response.Content;
+                string responseString = responseContent.ReadAsStringAsync().Result;
+                var location = JsonConvert.DeserializeObject<OpenStreetMapLocation>(responseString);
+                if (location.address.county != null)
+                {
+                    return location.address.county;
+                }
+                else if (location.address.city != null)
+                {
+                    return location.address.city;
+                }
             }
+            return "unbekannt";
 
         }
 
