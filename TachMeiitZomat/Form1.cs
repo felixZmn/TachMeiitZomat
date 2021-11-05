@@ -4,21 +4,17 @@ using System.Threading;
 using System.Drawing;
 
 /*
- * Zeit:
- * 2021.08.30: 1500 - 1730 -> 2.5h
- * 2021.09.02: 1300 - 1500 -> 2h
- * 2021.09.02: 1900 - 2100 -> 2h
- * 2021.09.03: 1500 - 1700 -> 2h
- */
-
-/*
- * ToDo: ThreadAbortException vermeiden, wenn man einfach die einstellungen öffnet, während der thread im hintergrund läuft
+ * ToDo: ThreadAbortException vermeiden, wenn man einfach die Einstellungen öffnet, während der Thread im hintergrund läuft
+ * ToDo: HttpClient auf WebClient umstellen
+ * ToDo: Tread beim klick auf start starten
+ * ToDo: Foo() Fixen
  */
 namespace TachMeiitZomat
 {
     public partial class Form1 : Form
     {
         public static ManualResetEvent mre = new ManualResetEvent(true);
+        public static Settings Settings = new Settings();
 
         GPSHandler gps;
         Thread thread;
@@ -26,7 +22,7 @@ namespace TachMeiitZomat
         public Form1()
         {
             InitializeComponent();
-            LoadAndApplySettings();
+            ApplySettings();
             statusDisplay.Text = StatusEnum.STATUS_STOPPED;
         }
 
@@ -38,6 +34,7 @@ namespace TachMeiitZomat
         /// <param name="e"></param>
         private void startToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            // 
             if (gps.getReady())
             {
                 statusDisplay.Text = StatusEnum.STATUS_RUNNING;
@@ -103,20 +100,33 @@ namespace TachMeiitZomat
             updateSpeed(gps.getSpeed());
         }
 
+        private void LoadSettings()
+        {
+            // einstellungsdatei lesen, parsen und in settings-objekt zur verfügung stellen
+            Settings = new Settings();
+        }
+
+        public void ApplySettings()
+        {
+            this.Text = Settings.DisplayTitle;
+            this.BackColor = Settings.Color;
+            labelSpeed.ForeColor = Settings.FontColor;
+            labelSpeed.Font = Settings.Font;
+            labelCounty.ForeColor = Settings.FontColor;
+            labelCounty.Font = Settings.Font;
+            // times 1000, because interval is saved in seconds, not in ms
+            gpsLocationTimer.Interval = Settings.RefreshIntervall * 1000;
+
+            Foo();
+        }
+
         /// <summary>
         /// Load and Apply settings from settings file
         /// </summary>
-        public void LoadAndApplySettings()
+        public void Foo()
         {
-            Settings settings = new Settings();
-            this.Text = settings.getDisplayTitle();
-            this.BackColor = Color.FromArgb(Convert.ToInt32(settings.getColor()));
-            labelSpeed.ForeColor = settings.getFontColor();
-            labelSpeed.Font = settings.getFont();
-            labelCounty.ForeColor = settings.getFontColor();
-            labelCounty.Font = settings.getFont();
-            // times 1000, because interval is saved in seconds, not in ms
-            gpsLocationTimer.Interval = Convert.ToInt32(settings.getRefreshInterval()) * 1000;
+            
+            
             if (thread != null && thread.IsAlive)
             {
                 thread.Abort();
@@ -125,7 +135,7 @@ namespace TachMeiitZomat
             {
                 gps.Dispose();
             }
-            gps = new GPSHandler(settings.getComPort());
+            gps = new GPSHandler(Settings.COMPort);
             thread = new Thread(new ThreadStart(gps.ReadGpsSensor));
         }
 

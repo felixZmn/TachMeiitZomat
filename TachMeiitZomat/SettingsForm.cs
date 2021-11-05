@@ -8,7 +8,7 @@ namespace TachMeiitZomat
 {
     public partial class SettingsForm : Form
     {
-        int color = 0;
+        Color color;
         Font font;
         Color fontColor;
 
@@ -25,39 +25,37 @@ namespace TachMeiitZomat
 
         private void settingsSaveButton_Click(object sender, EventArgs e)
         {
-            Settings settings = new Settings();
-            settings.setRefreshInterval(InputRefreshInterval.Value.ToString());
-            settings.setDisplayTitle(TbDisplayTitle.Text);
-            settings.setComPort(comboBoxPorts.Text);
-            settings.setColor(color);
-            settings.setFont(font);
-            settings.setFontColor(fontColor);
+            Form1.Settings.RefreshIntervall = Convert.ToInt32(InputRefreshInterval.Value);
+            Form1.Settings.DisplayTitle = TbDisplayTitle.Text;
+            Form1.Settings.COMPort = comboBoxPorts.Text;
+            Form1.Settings.Color = color;
+            Form1.Settings.Font = font;
+            Form1.Settings.FontColor = fontColor;
             Close();
         }
 
         private void initForm()
         {
-            Settings settings = new Settings();
-            InputRefreshInterval.Value = Convert.ToDecimal(settings.getRefreshInterval());
-            TbDisplayTitle.Text = settings.getDisplayTitle();
-            comboBoxPorts.Text = settings.getComPort();
-            color = Convert.ToInt32(settings.getColor()); 
-            btnColor.BackColor = Color.FromArgb(color);
-            font = settings.getFont();
-            fontColor = settings.getFontColor();
+            InputRefreshInterval.Value = Convert.ToDecimal(Form1.Settings.RefreshIntervall);
+            TbDisplayTitle.Text = Form1.Settings.DisplayTitle;
+            comboBoxPorts.Text = Form1.Settings.COMPort;
+            color = Form1.Settings.Color;
+            btnColor.BackColor = Form1.Settings.Color;
+            font = Form1.Settings.Font;
+            fontColor = Form1.Settings.FontColor;
         }
 
         private void SettingsForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            (Application.OpenForms["Form1"] as Form1).LoadAndApplySettings();
+            (Application.OpenForms["Form1"] as Form1).ApplySettings();
         }
 
         private void btnColor_Click(object sender, EventArgs e)
         {
             if (colorDialog1.ShowDialog() == DialogResult.OK)
             {
-                color = colorDialog1.Color.ToArgb();
-                btnColor.BackColor = Color.FromArgb(color);
+                color = colorDialog1.Color;
+                btnColor.BackColor = colorDialog1.Color;
             }   
         }
 
