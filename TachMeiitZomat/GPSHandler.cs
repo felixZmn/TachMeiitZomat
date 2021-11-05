@@ -51,12 +51,13 @@ namespace TachMeiitZomat
             {
                 Form1.mre.WaitOne();
                 string message = port.ReadLine();
-                parseNMEAMessage(message);
+                coordinate = parseNMEAMessage(message);
             }
         }
 
-        private void parseNMEAMessage(string message)
+        private GeoCoordinate parseNMEAMessage(string message)
         {
+            var cord = new GeoCoordinate();
             // only parse gprmc messages
             if (message.Contains("GPRMC"))
             {
@@ -71,11 +72,12 @@ namespace TachMeiitZomat
                     double degreeLng = Convert.ToDouble(gprmcMessage.Longitude.Substring(0, 3));
                     degreeLng += Convert.ToDouble(gprmcMessage.Longitude.Substring(3).Replace(".", ",")) / 60;
 
-                    coordinate.Latitude = degreeLat;
-                    coordinate.Longitude = degreeLng;
-                    coordinate.Speed = Convert.ToDouble(gprmcMessage.Speed.Replace(".", ","));
+                    cord.Latitude = degreeLat;
+                    cord.Longitude = degreeLng;
+                    cord.Speed = Convert.ToDouble(gprmcMessage.Speed.Replace(".", ","));
                 }
             }
+            return cord;
         }
 
 
