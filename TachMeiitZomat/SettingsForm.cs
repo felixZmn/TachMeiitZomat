@@ -2,7 +2,6 @@
 using System.Windows.Forms;
 using System.IO.Ports;
 using System.Drawing;
-using System.ComponentModel;
 
 namespace TachMeiitZomat
 {
@@ -56,7 +55,7 @@ namespace TachMeiitZomat
             {
                 color = colorDialog1.Color;
                 btnColor.BackColor = colorDialog1.Color;
-            }   
+            }
         }
 
         private void btnFont_Click(object sender, EventArgs e)
@@ -65,7 +64,7 @@ namespace TachMeiitZomat
             fontDialog1.ShowEffects = true;
             fontDialog1.Font = font;
             fontDialog1.Color = fontColor;
-            if(fontDialog1.ShowDialog() == DialogResult.OK)
+            if (fontDialog1.ShowDialog() == DialogResult.OK)
             {
                 font = fontDialog1.Font;
                 fontColor = fontDialog1.Color;

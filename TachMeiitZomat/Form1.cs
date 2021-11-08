@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.Threading;
-using System.Drawing;
+using Newtonsoft.Json;
+using System.Threading.Tasks;
 
 /*
  * ToDo: ThreadAbortException vermeiden, wenn man einfach die Einstellungen öffnet, während der Thread im hintergrund läuft
@@ -13,10 +14,9 @@ namespace TachMeiitZomat
 {
     public partial class Form1 : Form
     {
-        public static ManualResetEvent mre = new ManualResetEvent(true);
         public static Settings Settings = new Settings();
 
-        GPSHandler gps;
+        GpsSensor sensor;
         Thread thread;
 
         public Form1()
@@ -34,25 +34,20 @@ namespace TachMeiitZomat
         /// <param name="e"></param>
         private void startToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // 
-            if (gps.getReady())
+            try
             {
+                PrepareBackgroundTasks();
                 statusDisplay.Text = StatusEnum.STATUS_RUNNING;
-                if (thread.ThreadState == ThreadState.Unstarted)
-                {
-                    thread.Start();
-                }
-                else
-                {
-                    mre.Set();
-                }
+                thread.Start();
                 gpsLocationTimer.Enabled = true;
                 speedTimer.Enabled = true;
-            } else
+                startToolStripMenuItem.Enabled = false;
+                stopToolStripMenuItem.Enabled = true;
+            }
+            catch (Exception ex)
             {
                 MessageBox.Show("GPS-Empfänger konnte nicht initialisiert werden. Bitte Einstellungen und Verbindung prüfen");
             }
-            
         }
 
         /// <summary>
@@ -62,10 +57,7 @@ namespace TachMeiitZomat
         /// <param name="e"></param>
         private void stopToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            mre.Reset();
-            gpsLocationTimer.Enabled = false;
-            speedTimer.Enabled = false;
-            statusDisplay.Text = StatusEnum.STATUS_STOPPED;
+            StopBackgroundTasks();
         }
 
         /// <summary>
@@ -73,8 +65,9 @@ namespace TachMeiitZomat
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void eToolStripMenuItem_Click(object sender, EventArgs e)
+        private void SettingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            StopBackgroundTasks();
             SettingsForm settingsForm = new SettingsForm();
             settingsForm.Show();
         }
@@ -86,8 +79,29 @@ namespace TachMeiitZomat
         /// <param name="e"></param>
         private void gpsLocationTimer_Tick(object sender, EventArgs e)
         {
-            updateCounty(gps.getCountyOrCity());
+            var cords = sensor.GetCoordinate();
+            try{
+                var result = Task.Run(() => CoordinateResolver.Resolve(cords)).Result;
+                var location = JsonConvert.DeserializeObject<OpenStreetMapLocation>(result);
+                if (location.address.county != null)
+                {
+                    updateCounty(location.address.county);
+                }
+                else if (location.address.city != null)
+                {
+                    updateCounty(location.address.city);
+                }
+                else
+                {
+                    updateCounty("unbekannt");
+                }
+            } catch (Exception ex)
+            {
+                updateCounty("Netzwerkfehler");
+            }
         }
+
+
 
         /// <summary>
         /// periodic update of displayed speed  <br />
@@ -97,13 +111,7 @@ namespace TachMeiitZomat
         /// <param name="e"></param>
         private void speedTimer_Tick(object sender, EventArgs e)
         {
-            updateSpeed(gps.getSpeed());
-        }
-
-        private void LoadSettings()
-        {
-            // einstellungsdatei lesen, parsen und in settings-objekt zur verfügung stellen
-            Settings = new Settings();
+            updateSpeed(sensor.GetCoordinate().Speed);
         }
 
         public void ApplySettings()
@@ -116,27 +124,6 @@ namespace TachMeiitZomat
             labelCounty.Font = Settings.Font;
             // times 1000, because interval is saved in seconds, not in ms
             gpsLocationTimer.Interval = Settings.RefreshIntervall * 1000;
-
-            Foo();
-        }
-
-        /// <summary>
-        /// Load and Apply settings from settings file
-        /// </summary>
-        public void Foo()
-        {
-            
-            
-            if (thread != null && thread.IsAlive)
-            {
-                thread.Abort();
-            }
-            if(gps!=null)
-            {
-                gps.Dispose();
-            }
-            gps = new GPSHandler(Settings.COMPort);
-            thread = new Thread(new ThreadStart(gps.ReadGpsSensor));
         }
 
         /// <summary>
@@ -159,7 +146,6 @@ namespace TachMeiitZomat
 
         private void kontaktToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // ToDo: Echte Mail-Adresse dazu schreiben
             System.Diagnostics.Process.Start("mailto:" + "felix.zimmermann.1.de@gmail.com");
         }
 
@@ -171,7 +157,31 @@ namespace TachMeiitZomat
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            thread.Abort();
+            if (thread != null)
+            {
+                thread.Abort();
+            }
+        }
+        private void PrepareBackgroundTasks()
+        {
+            sensor = new GpsSensor(Settings.COMPort);
+            thread = new Thread(new ThreadStart(sensor.ReadLoop));
+        }
+        private void StopBackgroundTasks()
+        {
+            gpsLocationTimer.Enabled = false;
+            speedTimer.Enabled = false;
+            statusDisplay.Text = StatusEnum.STATUS_STOPPED;
+            startToolStripMenuItem.Enabled = true;
+            stopToolStripMenuItem.Enabled = false;
+            if (sensor != null)
+            {
+                sensor.Dispose();
+            }
+            if (thread != null)
+            {
+                thread.Abort();
+            }
         }
     }
 }
