@@ -4,12 +4,7 @@ using System.Threading;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
 
-/*
- * ToDo: ThreadAbortException vermeiden, wenn man einfach die Einstellungen öffnet, während der Thread im hintergrund läuft
- * ToDo: HttpClient auf WebClient umstellen
- * ToDo: Tread beim klick auf start starten
- * ToDo: Foo() Fixen
- */
+
 namespace TachMeiitZomat
 {
     public partial class Form1 : Form

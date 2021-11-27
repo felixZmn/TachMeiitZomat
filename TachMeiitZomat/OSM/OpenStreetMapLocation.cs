@@ -8,10 +8,10 @@ namespace TachMeiitZomat
 {
     public class OpenStreetMapLocation
     {
-        public int place_id { get; set; }
+        public long place_id { get; set; }
         public String licence { get; set; }
         public String osm_type { get; set; }
-        public int osm_id { get; set; }
+        public long osm_id { get; set; }
         public String lat { get; set; }
         public String lon { get; set; }
         public String display_name { get; set; }
