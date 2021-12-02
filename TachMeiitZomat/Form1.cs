@@ -72,11 +72,11 @@ namespace TachMeiitZomat
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void gpsLocationTimer_Tick(object sender, EventArgs e)
+        private async void gpsLocationTimer_Tick(object sender, EventArgs e)
         {
             var cords = sensor.GetCoordinate();
             try{
-                var result = Task.Run(() => CoordinateResolver.Resolve(cords)).Result;
+                var result = await Task.Run(() => CoordinateResolver.Resolve(cords));
                 var location = JsonConvert.DeserializeObject<OpenStreetMapLocation>(result);
                 if (location.address.county != null)
                 {
